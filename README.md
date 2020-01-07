@@ -71,4 +71,16 @@
       Username: $oauthtoken
       Password: NGC에 가입하면 얻을 수 있는 API Key 입력
       ```
-* [ue4-docker](https://adamrehn.com/docs/ue4-docker/configuration/configuring-linux) 
+* [ue4-docker](https://adamrehn.com/docs/ue4-docker/configuration/configuring-linux) 설치하기.
+* [docker에서 Unreal Engine 빌드하기](https://github.com/microsoft/AirSim/blob/master/docs/docker_ubuntu.md#build-unreal-engine-inside-docker)
+* AirSim git 복제하기.
+  ```
+  git clone https://github.com/microsoft/AirSim.git
+  ```
+* [UE4 docker container에서 AirSim 빌드하기](https://github.com/microsoft/AirSim/blob/master/docs/docker_ubuntu.md#building-airsim-inside-ue4-docker-container)
+
+
+
+
+
+
