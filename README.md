@@ -32,10 +32,10 @@
       ```
 * [nvidia-docker2](https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(version-2.0)) 설치하기.
   - Docker 이미지, 컨테이너 설치 폴더 변경 [[참고 사이트](https://docs.docker.com/config/daemon/systemd/#start-automatically-at-system-boot)]
-    * Docker 서비스 중지 및 폴더 생성
+    * Docker 서비스 중지 및 폴더 생성 (디렉토리 생성은 앞서 했으므로 무시)
       ```
       sudo serviece docker stop
-      mkdir DIR_DOCKER
+      mkdir -p /home/USER/DOCKERFOLDER
       ```
     * Docker daemon 설정 파일 생성(또는 수정)
       ```
@@ -44,7 +44,7 @@
       * 아래 구문 추가
       ```
       {
-        "data-root": "DIR_DOCKER",
+        "data-root": "/home/USER/DOCKERFOLDER",
         "storage-driver": "overlay",
           "runtimes": {
             "nvidia": {
@@ -60,7 +60,7 @@
       ```
       * 확인
       ```
-      sudo lsof | grep DIR_DOCKER
+      sudo lsof | grep /home/USER/DOCKERFOLDER
       ```
   * [NVIDIA GPU CLOUD](https://ngc.nvidia.com/registry/)에 로그인
     * 가입 후 개인 API Key를 얻어야 각종 도커 이미지를 다운로드할 수 있다.
