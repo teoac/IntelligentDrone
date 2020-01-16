@@ -109,11 +109,10 @@
     sudo lsof | grep /home/USER/DOCKERFOLDER
     ```
 
-* 정상 설치 확인하기
-  
-```
+* 정상 설치 확인하기  
+  ```
   $ docker run --runtime=nvidia --rm nvidia/cuda:10.0-base nvidia-smi
-```
+  ```
 
 * [NVIDIA GPU CLOUD](https://ngc.nvidia.com/registry/)에 로그인하기.
   
@@ -127,16 +126,7 @@
     Username: $oauthtoken
     Password: NGC에 가입하면 얻을 수 있는 API Key 입력
     ```
-  ```
   
-  
-  ```
-
-### Unreal Engine
-
-* [ue4-docker](https://adamrehn.com/docs/ue4-docker/configuration/configuring-linux) 설치하기.
-
-* docker에서 Unreal Engine [빌드하기](https://github.com/microsoft/AirSim/blob/master/docs/docker_ubuntu.md#build-unreal-engine-inside-docker).
 
 
 
@@ -150,16 +140,16 @@
   $ git clone https://github.com/microsoft/AirSim.git
   ```
 
-* docker image 빌드하기.
+* docker image 받기.
 
   ```
   $ cd AirSim/docker
   $ python build_airsim_image.py \
-     --base_image=nvidia/cudagl:10.0-devel-ubuntu18.04 \
-     --target_image=airsim_binary:10.0-devel-ubuntu18.04
+     --base_image=nvidia/cudagl:10.0-devel-ubuntu16.04 \
+     --target_image=airsim_binary:10.0-devel-ubuntu16.04
   ```
 
-* Scene 파일 다운로드 받기.
+* Scene 파일 다운로드 받고 압축풀기.
 
   ```
   $ wget -c https://github.com/Microsoft/AirSim/releases/download/v1.2.0Linux/SCENE.zip
@@ -167,7 +157,7 @@
   $ rm SCENE.zip
   ```
 
-  * 위 SCENE에는 리눅스에서 사용가능한 Unreal environment 이름이 들어가야 한다. 아래는 v1.2.0에서 가능한 이름과 이를 실행하기 위한 sh 파일 목록이다.
+  * 위 SCENE에는 리눅스에서 사용가능한 Unreal environment 이름이 들어가야 한다. 아래는 v1.2.0에서 가능한 이름과 이를 실행하기 위한 sh 파일 목록이다. [다운로드 링크](https://github.com/microsoft/AirSim/releases/tag/v1.2.0Linux)
 
     ```
     Africa				| Africa/Africa_001.sh
@@ -188,7 +178,7 @@
   * 지정 창크기로 실행하기
 
     ```
-    $ ./run_airsim_image_binary.sh airsim_binary:10.0-devel-ubuntu18.04 SCENE/SCENE.sh -windowed -ResX=1080 -ResY=720
+    $ ./run_airsim_image_binary.sh airsim_binary:10.0-devel-ubuntu16.04 SCENE/SCENE.sh -windowed -ResX=1080 -ResY=720
     ```
     
   * SCENE/SCENE.sh에 가능한 목록
@@ -201,42 +191,67 @@
 
 
 
-
-### AirSim (Source)
-
-* [참고사이트](https://github.com/Microsoft/AirSim/blob/master/docs/docker_ubuntu.md#source)
-  
-* AirSim git 복제하기.
-  
-  ```
-  $ git clone https://github.com/microsoft/AirSim.git
-  ```
-  
-* UE4 docker container에서 AirSim [빌드하기](https://github.com/microsoft/AirSim/blob/master/docs/docker_ubuntu.md#building-airsim-inside-ue4-docker-container).
-
-* 실행하기.
-
-  ```
-  ./run_airsim_image_source.sh airsim_source:4.19.2-cudagl10.0
-  ```
-  
-  * DOCKER_IMAGE_NAME = airsim_source:4.19.2-cudagl10.0
-  * container 내부에서 `/home/ue4` 에서 `UnrealEngine`과 `AirSim` 디렉토리를 볼 수 있다.
-  * `PATH/TO/Airsim/docker/settings.json`은 containter 내부의 `/home/airsim_user/Documents/AirSim/settings.json` 와 연결되어 있다.
-  
-* Unreal Engine을 container 내부에서 아래와 같이 실행한다.
-
-  ```
-  ue4@HOSTMACHINE:~$ /home/ue4/UnrealEngine/Engine/Binaries/Linux/UE4Editor
-  ```
-
-
-
-
-
 ## ROS 환경 구성
 
-* [참고사이트](https://github.com/microsoft/AirSim/blob/master/docs/ros.md)
+* 참고사이트: [ROS docker #1](http://wiki.ros.org/docker/Tutorials/Docker) | [ROS docker #2](https://hub.docker.com/_/ros) | [ROS docker #3]([https://medium.com/@rookiecj/%EA%B0%91%EC%9E%90%EA%B8%B0-ros-%EA%B7%B8%EB%A6%AC%EA%B3%A0-docker%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-5b941c9ff098](https://medium.com/@rookiecj/갑자기-ros-그리고-docker개발환경-5b941c9ff098)) | [ROS kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu) | [AirSim w/ ROS](https://github.com/microsoft/AirSim/blob/master/docs/ros.md)
+
+* ROS kinetic 설치하기.
+
+  * ROS kinetic (for Ubuntu 16.04) docker image 다운로드하기.
+  
+    ```
+    $ docker pull osrf/ros:kinetic-desktop-full
+    ```
+    
+  * docker container 생성 및 내부 터미널 명령이 가능하도록 실행하기.
+  
+    ```
+    $ docker run -it osrf/ros:kinetic-desktop-full
+    ```
+    
+  * 필수 패키지 설치하기.
+  
+    ```
+    $ apt-get update
+    $ apt-get install -y tmux curl wget vim sudo libgl1-mesa-glx libgl1-mesa-dri \
+        mesa-utils unzip locales ntp whois
+    ```
+  
+  * 기존 docker에 있던 기본 ros 환경 삭제하기.
+  
+    ```
+    $ apt-get autoremove --purge --yes
+    $ rm -rf /var/lib/apt/lists/*
+    $ rm -rf /etc/ros/rosdep/sources.list.d/20-default.list
+    ```
+    
+  * rosdep 초기화하기.
+  
+    ```
+    $ rosdep init
+    $ rosdep update
+    ```
+    
+  * ROS 관련 패키지 설치하기.
+  
+    ```
+    $ apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
+    ```
+
+* ROS 작업공간 생성하기.
+
+  * catkin 작업공간 만들기.
+
+    ```
+    $ mkdir -p /catkin_ws/src
+    $ cd /catkin_ws/
+    $ catkin_make
+    $ source devel/setup.bash
+    $ echo $ROS_PACKAGE_PATH/catkin_ws/src:/opt/ros/kinetic/share
+    ```
+
+    
+
 
 
 
